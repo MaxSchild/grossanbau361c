@@ -5,8 +5,24 @@ import Button from '@mui/material/Button';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 
 import IconButton from '@mui/material/IconButton';
-import { waterPlants } from '@/app/actions/watering.js'
+import { waterPlants, getWateringStatus } from '@/app/actions/watering.js'
+
+import { useState, useEffect } from "react";
+
+
 export default function Home() {
+
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!isLoaded) {
+      const values = getWateringStatus();
+
+      console.log("Loaded Values into client:");
+      console.log(values);
+      setIsLoaded(true);
+    }
+  }, [isLoaded]);
   return (
     <>
 
