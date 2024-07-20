@@ -45,6 +45,10 @@ export async function getWateringStatus() {
 
     if (!isError) {
 
+        if (returnValue.length === 0) {
+            return { wasWateredToday: false };
+        }
+
         const today = new Date();
         const referenceDate = new Date(returnValue[0].timestamp)
 
@@ -72,6 +76,12 @@ export async function waterPlants() {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
+
+    //check if was already watered today
+    const wateringStatus = await getWateringStatus();
+    if (wateringStatus.wasWateredToday) {
+        return false;
+    }
 
     try {
         await client.connect();

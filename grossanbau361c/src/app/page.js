@@ -1,7 +1,8 @@
 "use client";
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress'
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 
 import IconButton from '@mui/material/IconButton';
@@ -10,17 +11,23 @@ import { waterPlants, getWateringStatus } from '@/app/actions/watering.js'
 import { useState, useEffect } from "react";
 
 
-export default function Home() {
+export default function Home({ data }) {
 
   const [isLoaded, setIsLoaded] = useState(false);
+  const [wateringStatus, setWateringStatus] = useState();
 
   useEffect(() => {
     if (!isLoaded) {
-      const values = getWateringStatus();
+      getWateringStatus().then(
+        (res) => {
+          console.log("Loaded Values into client:");
+          console.log(res);
+          setIsLoaded(true);
+          setWateringStatus(res)
+        }
+      )
 
-      console.log("Loaded Values into client:");
-      console.log(values);
-      setIsLoaded(true);
+
     }
   }, [isLoaded]);
   return (
@@ -30,19 +37,28 @@ export default function Home() {
         <Typography variant="h1">
           Gegossen?
         </Typography>
+        {
+          (!isLoaded || wateringStatus === null || wateringStatus === undefined) ?
+            <Box sx={{ display: 'flex' }}>
+              <CircularProgress />
+            </Box>
+            :
+            <><IconButton aria-label="waterPlants" onClick={async () => {
 
-        <IconButton aria-label="waterPlants" onClick={async () => {
+              waterPlants();
+            }} color={wateringStatus.wasWateredToday ? "success" : "error"}>
+              <WaterDropIcon />
+            </IconButton>
+              <Typography >
+                Done
+              </Typography>
 
-          waterPlants();
-        }} color="success">
-          <WaterDropIcon />
-        </IconButton>
+            </>
+        }
+      </Stack >
 
 
-        <Typography >
-          Done
-        </Typography>
-      </Stack>
+
 
     </>
   );
