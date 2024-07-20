@@ -35,7 +35,7 @@ export default function Home({ data }) {
     <>
 
       <Stack direction="column">
-        <Typography variant="h1">
+        <Typography variant="h2">
           Gegossen?
         </Typography>
         {
